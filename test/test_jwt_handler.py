@@ -4,14 +4,15 @@ Simple test script for JWTHandler functionality
 """
 import sys
 import os
-sys.path.append('src')
+
+# Add project root to path
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, project_root)
 
 import jwt as pyjwt
 from datetime import datetime, timezone
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric import rsa
-from cryptography.hazmat.backends import default_backend
-import tempfile
+from src.config.settings import settings
+from src.utils.jwt_handler import JWTHandler
 
 
 def test_jwt_handler():
@@ -19,15 +20,10 @@ def test_jwt_handler():
     print("🧪 Testing JWTHandler...")
 
     try:
-        # Mock settings for testing
-        from config.settings import settings
 
         # Set variables value
         settings.enable_banking_private_key_path = settings.enable_banking_private_key_path
         settings.enable_banking_application_id = settings.enable_banking_application_id
-
-        # Import and test JWTHandler
-        from utils.jwt_handler import JWTHandler
 
         # Create JWT handler
         jwt_handler = JWTHandler()

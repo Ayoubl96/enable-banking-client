@@ -1,6 +1,6 @@
 import jwt as pyjwt
 from datetime import datetime, timedelta, timezone
-from config import settings
+from .. config import settings
 
 class JWTHandler:
     def __init__(self, algorithm: str = 'RS256'):
