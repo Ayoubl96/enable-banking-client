@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+      - "8001:8001"
     environment:
       - ENABLE_BANKING_BASE_API_URL=${ENABLE_BANKING_API_URL:-https://api.enablebanking.com}
       - ENABLE_BANKING_PRIVATE_KEY_PATH=${ENABLE_BANKING_PRIVATE_KEY_PATH}

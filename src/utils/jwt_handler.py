@@ -1,6 +1,6 @@
 import jwt as pyjwt
 from datetime import datetime, timedelta, timezone
-from .. config import settings
+from config import settings
 
 class JWTHandler:
     def __init__(self, algorithm: str = 'RS256'):
@@ -27,5 +27,4 @@ class JWTHandler:
                 'kid': settings.enable_banking_application_id
             }
         )
-        print(jwt)
         return jwt

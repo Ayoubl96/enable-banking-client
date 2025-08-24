@@ -1,16 +1,14 @@
-from xmlrpc.client import boolean
-
-from pydantic import BaseModel
-from pydantic_settings import BaseSettings
-from pydantic.dataclasses import Field, validator
-from typing import Optional, List
-from datetime import datetime
-from models.common import PSUType
-from models.aspsp import ASPSP
 import uuid
+from datetime import datetime
+from typing import List
 
-from src.models.aspsp import ASPSPListResponse
-from src.models.common import CashAccountType
+from models.aspsp import ASPSP
+from models.common import PSUType
+from pydantic import BaseModel
+from pydantic import validator
+
+from models.aspsp import ASPSPListResponse
+from models.common import CashAccountType
 
 
 class AccountsAuth(BaseModel):
@@ -20,7 +18,15 @@ class AccountsAuth(BaseModel):
     cash_account_type: CashAccountType
 
 class ApplicationInfo(BaseModel):
+    name: str
+    description: str
     kid: str
+    environment: str
+    redirect_urls: List[str]
+    active: bool
+    countries: List[str]
+    services: List[str]
+
 
 class AccountAccess(BaseModel):
     account: bool
@@ -35,7 +41,7 @@ class AuthorizationRequest(BaseModel):
     aspsp: ASPSP
     state: str
     redirect_url: str
-    psu_type: PSUType
+    psu_type: str
 
     @validator("state")
     def validate_state(cls, v):
