@@ -52,3 +52,14 @@ async def init_auth(
         return auth_response
     except httpx.HTTPStatusError as e:
         raise HTTPException(status_code=e.response.status_code, detail=str(e))
+
+@router.post("/callback")
+async def authorization_callback(
+        code: str,
+        client=Depends(get_enable_banking_client)
+):
+    try:
+        result = await client.create_session(code)
+        return result
+    except httpx.HTTPStatusError as e:
+        raise HTTPException(status_code=e.response.status_code, detail=str(e))

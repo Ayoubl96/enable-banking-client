@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from typing import List
+from typing import List, Dict, Optional
 
 from models.aspsp import ASPSP
 from models.common import PSUType
@@ -10,12 +10,32 @@ from pydantic import validator
 from models.aspsp import ASPSPListResponse
 from models.common import CashAccountType
 
+class AccountId(BaseModel):
+    iban: str
+    other: Optional[str] = None
+
+class AllAccountId(BaseModel):
+    identification: str
+    scheme_name: str
+    issuer: Optional[str] = None
 
 class AccountsAuth(BaseModel):
-    iban: str
+    account_id: AccountId
+    all_account_ids: List[AllAccountId]
+    account_servicer: Optional[str] = None
+    name: str
+    details: Optional[str] = None
+    usage: str
+    cash_account_type: str
+    product: Optional[str] = None
     currency: str
-    uid: uuid.UUID
-    cash_account_type: CashAccountType
+    psu_status: Optional[str] = None
+    credit_limit: Optional[str] = None
+    legal_age: Optional[str] = None
+    postal_address: Optional[str] = None
+    uid: str
+    identification_hash: str
+    identification_hashes: List[str]
 
 class ApplicationInfo(BaseModel):
     name: str
@@ -29,10 +49,10 @@ class ApplicationInfo(BaseModel):
 
 
 class AccountAccess(BaseModel):
-    account: bool
-    balance: bool
-    transaction: bool
-    valid_util: datetime
+    accounts: Optional[str] = None
+    balances: bool
+    transactions: bool
+    valid_until: datetime
 
 class Validity(BaseModel):
     valid_until: datetime
@@ -63,7 +83,7 @@ class CallbackParameters(BaseModel):
 class CallbackResponse(BaseModel):
     session_id: str
     accounts: List[AccountsAuth]
-    aspps: List[ASPSPListResponse]
+    aspsp: ASPSP
     access: AccountAccess
-    psu_type: PSUType
+    psu_type: str
 

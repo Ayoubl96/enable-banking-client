@@ -7,6 +7,8 @@ from models import ApplicationInfo, AuthorizationRequest, AuthorizationResponse,
 
 from models import Validity
 
+from models import CallbackParameters, CallbackResponse
+
 
 class EnableBankingClient:
     def __init__(self):
@@ -74,7 +76,7 @@ class EnableBankingClient:
             ),
             state=self.application_id,
             redirect_url=redirect_url,
-            psu_type="personal"
+            psu_type=psu_type
         )
         # Convert datetime to ISO format for JSON serialization
         auth_data = auth_request.dict(exclude_none=True)
@@ -90,4 +92,15 @@ class EnableBankingClient:
         response.raise_for_status()
         print(response.json())
         return AuthorizationResponse(**response.json())
+    async def create_session(self, code: str):
+        request = CallbackParameters(code=code)
+        response = await self.http_client.post(
+            f"{self.base_url}/sessions",
+            json=request.dict(),
+            headers=self._get_headers()
+        )
+        response.raise_for_status()
+        print(response.json())
+        return CallbackResponse(**response.json())
+
 
