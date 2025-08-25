@@ -3,6 +3,7 @@ from typing import Optional, List
 from datetime import datetime, date, timedelta, timezone
 import uuid
 import httpx
+from models import ASPSPListResponse, AuthorizationResponse, CallbackResponse
 
 router = APIRouter()
 
@@ -18,12 +19,14 @@ async def get_enable_banking_client(request: Request):
 @router.get("/banks")
 async def get_banks(
     country: str = Query(..., regex="^[A-Z]{2}$", description="ISO country code"),
-    client = Depends(get_enable_banking_client)
+    response_model = ASPSPListResponse,
+    client = Depends(get_enable_banking_client
+    )
 ):
     """Get list of available banks for a country"""
     try:
         result = await client.get_aspsps(country)
-        return result
+        return ASPSPListResponse(aspsps=result.aspsps)
     except httpx.HTTPStatusError as e:
         raise HTTPException(status_code=e.response.status_code, detail=str(e))
     except Exception as e:
@@ -36,7 +39,8 @@ async def init_auth(
         access_type: str,
         validity_hours: int,
         redirect_url: str,
-        client=Depends(get_enable_banking_client)
+        client=Depends(get_enable_banking_client),
+        response_model=AuthorizationResponse,
 ):
     try:
         valid_until = datetime.now(timezone.utc) + timedelta(hours=validity_hours)
@@ -49,17 +53,28 @@ async def init_auth(
             valid_until=valid_until.isoformat(),
         )
 
-        return auth_response
+        return AuthorizationResponse(
+            url=auth_response.url,
+            authorization_id=auth_response.authorization_id,
+            psu_id_hash=auth_response.psu_id_hash
+        )
     except httpx.HTTPStatusError as e:
         raise HTTPException(status_code=e.response.status_code, detail=str(e))
 
 @router.post("/callback")
 async def authorization_callback(
         code: str,
-        client=Depends(get_enable_banking_client)
+        client=Depends(get_enable_banking_client),
+        response_model=CallbackResponse
 ):
     try:
         result = await client.create_session(code)
-        return result
+        return CallbackResponse(
+            session_id=result.session_id,
+            accounts=result.accounts,
+            aspsp=result.aspsp,
+            access=result.access,
+            psu_type=result.psu_type
+        )
     except httpx.HTTPStatusError as e:
         raise HTTPException(status_code=e.response.status_code, detail=str(e))
