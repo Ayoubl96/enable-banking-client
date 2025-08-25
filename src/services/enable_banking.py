@@ -81,7 +81,6 @@ class EnableBankingClient:
         # Convert datetime to ISO format for JSON serialization
         auth_data = auth_request.dict(exclude_none=True)
         auth_data['access']['valid_until'] = auth_data['access']['valid_until'].isoformat()
-        print(auth_data)
 
         response = await self.http_client.post(
             f"{self.base_url}/auth",
@@ -90,7 +89,6 @@ class EnableBankingClient:
         )
 
         response.raise_for_status()
-        print(response.json())
         return AuthorizationResponse(**response.json())
     async def create_session(self, code: str):
         request = CallbackParameters(code=code)
@@ -100,7 +98,6 @@ class EnableBankingClient:
             headers=self._get_headers()
         )
         response.raise_for_status()
-        print(response.json())
         return CallbackResponse(**response.json())
 
 
