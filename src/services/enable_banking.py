@@ -12,6 +12,7 @@ from models import CallbackParameters, CallbackResponse
 
 class EnableBankingClient:
     def __init__(self):
+        self.application_info = None
         self.base_url = settings.enable_banking_base_api_url
         self.jwt_handler = JWTHandler()
         self.application_id = settings.enable_banking_application_id

@@ -41,7 +41,7 @@ __all__ = [
     "ErrorInfo",
     "ASPSP",
     "ASPSPListResponse",
-    "AccountsAuth"
+    "AccountsAuth",
     "ApplicationInfo",
     "AccountAccess",
     "Validity",
