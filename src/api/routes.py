@@ -16,10 +16,9 @@ async def get_enable_banking_client(request: Request):
         request.app.state.enable_banking_client = enable_banking_client
     return request.app.state.enable_banking_client
 
-@router.get("/banks")
+@router.get("/banks", response_model=ASPSPListResponse)
 async def get_banks(
     country: str = Query(..., regex="^[A-Z]{2}$", description="ISO country code"),
-    response_model = ASPSPListResponse,
     client = Depends(get_enable_banking_client
     )
 ):
@@ -32,7 +31,7 @@ async def get_banks(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/auth/init")
+@router.post("/auth/init", response_model=AuthorizationResponse)
 async def init_auth(
         bank_name: str,
         bank_country: str,
@@ -40,7 +39,6 @@ async def init_auth(
         validity_hours: int,
         redirect_url: str,
         client=Depends(get_enable_banking_client),
-        response_model=AuthorizationResponse,
 ):
     try:
         valid_until = datetime.now(timezone.utc) + timedelta(hours=validity_hours)
@@ -61,11 +59,10 @@ async def init_auth(
     except httpx.HTTPStatusError as e:
         raise HTTPException(status_code=e.response.status_code, detail=str(e))
 
-@router.post("/callback")
+@router.post("/callback", response_model=CallbackResponse)
 async def authorization_callback(
         code: str,
-        client=Depends(get_enable_banking_client),
-        response_model=CallbackResponse
+        client=Depends(get_enable_banking_client)
 ):
     try:
         result = await client.create_session(code)

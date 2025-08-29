@@ -3,12 +3,8 @@ from datetime import datetime
 from typing import List, Dict, Optional
 
 from models.aspsp import ASPSP
-from models.common import PSUType
 from pydantic import BaseModel
 from pydantic import validator
-
-from models.aspsp import ASPSPListResponse
-from models.common import CashAccountType
 
 class AccountId(BaseModel):
     iban: str
