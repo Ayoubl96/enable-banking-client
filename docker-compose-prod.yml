@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  enable-banking-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    environment:
+      - ENABLE_BANKING_BASE_API_URL=${ENABLE_BANKING_API_URL:-https://api.enablebanking.com}
+      - ENABLE_BANKING_PRIVATE_KEY_PATH=/run/secrets/enable_banking_private_key
+      - ENABLE_BANKING_APPLICATION_ID=${ENABLE_BANKING_APPLICATION_ID}
+      - ENABLE_BANKING_ISS=${ENABLE_BANKING_ISS:-enablebanking.com}
+      - ENABLE_BANKING_AUD=${ENABLE_BANKING_AUD:-api.enablebanking.com}
+      - ENABLE_BANKING_TOKEN_EXPIRY_MINUTES=${ENABLE_BANKING_TOKEN_EXPIRY_MINUTES:-60}
+      - API_HOST=${API_HOST:-localhost}
+      - API_PORT=${API_PORT:-8001}
+    volumes:
+      - ./src:/app/src:ro # For development
+    secrets:
+      - enable_banking_private_key
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+secrets:
+  enable_banking_private_key:
+    external: true
