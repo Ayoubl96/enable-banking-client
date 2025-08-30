@@ -14,7 +14,7 @@ class Settings(BaseSettings):
 
     # Service Server configuration
     api_host: str = "localhost"
-    api_port: int = 8000
+    api_port: int = 8001
 
     class Config:
         env_file = ".env"
