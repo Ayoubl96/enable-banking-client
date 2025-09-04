@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     api_host: str = "localhost"
     api_port: int = 8001
 
+    env: str = "dev"
+
     class Config:
         env_file = ".env"
 

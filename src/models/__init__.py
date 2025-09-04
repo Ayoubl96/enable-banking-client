@@ -30,6 +30,11 @@ from .accounts import (
     BalancesResponse
 )
 
+from .session import (
+    SessionParameters,
+    SessionResponse
+)
+
 __all__ = [
     "PSUType",
     "AccountUsage",
@@ -51,4 +56,6 @@ __all__ = [
     "CallbackResponse",
     "Balance",
     "BalancesResponse",
+    "SessionParameters",
+    "SessionResponse"
 ]

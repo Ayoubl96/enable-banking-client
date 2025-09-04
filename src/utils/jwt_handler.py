@@ -27,5 +27,6 @@ class JWTHandler:
                 'kid': settings.enable_banking_application_id
             }
         )
-        print(jwt)
+        if settings.env == 'dev':
+            print(jwt)
         return jwt

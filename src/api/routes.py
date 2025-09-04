@@ -3,7 +3,7 @@ from typing import Optional, List
 from datetime import datetime, date, timedelta, timezone
 import uuid
 import httpx
-from models import ASPSPListResponse, AuthorizationResponse, CallbackResponse
+from models import ASPSPListResponse, AuthorizationResponse, CallbackResponse, SessionResponse
 
 router = APIRouter()
 
@@ -72,6 +72,29 @@ async def authorization_callback(
             aspsp=result.aspsp,
             access=result.access,
             psu_type=result.psu_type
+        )
+    except httpx.HTTPStatusError as e:
+        raise HTTPException(status_code=e.response.status_code, detail=str(e))
+
+
+@router.get("/session", response_model=SessionResponse)
+async def get_session(
+        session_id: str,
+        client=Depends(get_enable_banking_client),
+):
+    try:
+        result = await client.get_session(session_id)
+        return SessionResponse(
+            status=result.status,
+            accounts=result.accounts,
+            accounts_data=result.accounts_data,
+            aspsp=result.aspsp,
+            psu_type=result.psu_type,
+            psu_id_hash=result.psu_id_hash,
+            access=result.access,
+            created=result.created,
+            authorized=result.authorized,
+            closed=result.closed
         )
     except httpx.HTTPStatusError as e:
         raise HTTPException(status_code=e.response.status_code, detail=str(e))

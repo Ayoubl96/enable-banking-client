@@ -14,4 +14,3 @@ class BalancesResponse(BaseModel):
     balances: List[Balance]
     account_uid: Optional[str] = None
 
-

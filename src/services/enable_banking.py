@@ -7,7 +7,7 @@ from models import ApplicationInfo, AuthorizationRequest, AuthorizationResponse,
 
 from models import Validity
 
-from models import CallbackParameters, CallbackResponse
+from models import CallbackParameters, CallbackResponse, SessionParameters, SessionResponse
 
 
 class EnableBankingClient:
@@ -99,6 +99,16 @@ class EnableBankingClient:
             headers=self._get_headers()
         )
         response.raise_for_status()
+        print(response.json())
         return CallbackResponse(**response.json())
+
+    async def get_session(self, session_id: str):
+        request = SessionParameters(session_id=session_id)
+        response = await self.http_client.get(
+            f"{self.base_url}/sessions/{session_id}",
+            headers=self._get_headers()
+        )
+        response.raise_for_status()
+        return SessionResponse(**response.json())
 
 

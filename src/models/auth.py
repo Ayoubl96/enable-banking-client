@@ -6,22 +6,23 @@ from models.aspsp import ASPSP
 from pydantic import BaseModel
 from pydantic import validator
 
-class AccountId(BaseModel):
-    iban: str
-    other: Optional[str] = None
-
 class AllAccountId(BaseModel):
-    identification: str
-    scheme_name: str
+    identification: Optional[str] = None
+    scheme_name: Optional[str] = None
     issuer: Optional[str] = None
 
+class AccountId(BaseModel):
+    iban: Optional[str] = None
+    other: Optional[AllAccountId] = None
+
+
 class AccountsAuth(BaseModel):
-    account_id: AccountId
-    all_account_ids: List[AllAccountId]
+    account_id: Optional[AccountId]
+    all_account_ids: Optional[List[AllAccountId]] = None
     account_servicer: Optional[str] = None
     name: str
     details: Optional[str] = None
-    usage: str
+    usage: Optional[str] = None
     cash_account_type: str
     product: Optional[str] = None
     currency: str
@@ -82,4 +83,3 @@ class CallbackResponse(BaseModel):
     aspsp: ASPSP
     access: AccountAccess
     psu_type: str
-
