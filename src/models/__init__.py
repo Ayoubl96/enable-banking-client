@@ -27,7 +27,8 @@ from .auth import (
 
 from .accounts import (
     Balance,
-    BalancesResponse
+    BalancesResponse,
+    AccountId
 )
 
 from .session import (
@@ -56,6 +57,7 @@ __all__ = [
     "CallbackResponse",
     "Balance",
     "BalancesResponse",
+    "AccountId",
     "SessionParameters",
     "SessionResponse"
 ]

@@ -1,3 +1,5 @@
+from calendar import c
+from math import e
 from fastapi import APIRouter, HTTPException, Query, Depends, Request, Response
 from typing import Optional, List
 from datetime import datetime, date, timedelta, timezone
@@ -96,5 +98,18 @@ async def get_session(
             authorized=result.authorized,
             closed=result.closed
         )
+    except httpx.HTTPStatusError as e:
+        raise HTTPException(status_code=e.response.status_code, detail=str(e))
+
+@router.get("/account/{accountId}/transactions")
+async def get_transactions(
+    accountId: str,
+    date_from: Optional[datetime] = None,
+    date_to: Optional[datetime] = None,
+    client=Depends(get_enable_banking_client),
+):
+    try:
+        result = await client.get_transactions(account_id = accountId, date_from = date_from, date_to = date_to)
+        return result
     except httpx.HTTPStatusError as e:
         raise HTTPException(status_code=e.response.status_code, detail=str(e))

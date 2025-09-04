@@ -1,9 +1,9 @@
 import httpx
-from typing import Dict, Any, Optional, List
-from datetime import datetime, date
+from typing import Dict, Optional
+from datetime import date, datetime
 from utils.jwt_handler import JWTHandler
 from config.settings import settings
-from models import ApplicationInfo, AuthorizationRequest, AuthorizationResponse, ASPSPListResponse, BalancesResponse, ASPSP, AccountAccess
+from models import ApplicationInfo, AuthorizationRequest, AuthorizationResponse, ASPSPListResponse, ASPSP, AccountId
 
 from models import Validity
 
@@ -111,4 +111,23 @@ class EnableBankingClient:
         response.raise_for_status()
         return SessionResponse(**response.json())
 
+    async def get_transactions(self, account_id: str, date_from: Optional[datetime], date_to: Optional[datetime]):
+        print(account_id, date_from, date_to)
 
+        # Build URL with conditional query parameters
+        if date_from and date_to:
+            url = f"{self.base_url}/accounts/{account_id}/transactions?date_from={date_from}&date_to={date_to}"
+        elif date_from:
+            url = f"{self.base_url}/accounts/{account_id}/transactions?date_from={date_from}"
+        elif date_to:
+            url = f"{self.base_url}/accounts/{account_id}/transactions?date_to={date_to}"
+        else:
+            url = f"{self.base_url}/accounts/{account_id}/transactions"
+
+        response = await self.http_client.get(
+            url,
+            headers=self._get_headers()
+        )
+        print(response.json())
+        response.raise_for_status()
+        return response.json()
