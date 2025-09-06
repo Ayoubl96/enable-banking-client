@@ -31,6 +31,7 @@ class Transaction(BaseModel):
     booking_date: Optional[datetime] = None
     value_date: Optional[datetime] = None
     transaction_date: Optional[datetime] = None
+    remittance_information: Optional[str] = None
 
 class TransactionsResponse(BaseModel):
     transactions: List[Transaction]
